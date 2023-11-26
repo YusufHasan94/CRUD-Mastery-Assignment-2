@@ -26,14 +26,8 @@ const addressSchema = new Schema<address>({
   },
 });
 const orderSchema = new Schema<orders>({
-  productName: {
-    type: String,
-    required: true,
-  },
-  price: {
-    type: Number,
-    required: true,
-  },
+  productName: { type: String },
+  price: { type: Number },
   quantity: { type: Number },
 });
 const userSchema = new Schema<User>({
