@@ -11,7 +11,13 @@ const getAllUsersFromDB = async () => {
   return result;
 };
 
+const getAUserFromDB = async (id: string) => {
+  const result = await UserModel.aggregate([{ $match: { id } }]);
+  return result;
+};
+
 export const userService = {
   createUerIntoDB,
   getAllUsersFromDB,
+  getAUserFromDB,
 };

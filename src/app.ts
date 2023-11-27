@@ -7,7 +7,7 @@ const app: Application = express();
 app.use(express.json());
 app.use(cors());
 
-app.use("/api", userRoutes);
+app.use("/", userRoutes);
 
 const getController = (req: Request, res: Response) => {
   res.send("Hello World!");

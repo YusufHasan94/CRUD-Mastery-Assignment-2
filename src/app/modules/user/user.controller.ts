@@ -1,4 +1,4 @@
-import { User, userName } from "./user.interface";
+import { User } from "./user.interface";
 import { Request, Response } from "express";
 import { userService } from "./user.service";
 
@@ -60,7 +60,23 @@ const getAllUsers = async (req: Request, res: Response) => {
   }
 };
 
+const getAUser = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    console.log(userId);
+    const result = await userService.getAUserFromDB(userId);
+    res.status(200).json({
+      success: true,
+      message: "user find successfully",
+      data: result,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 export const userController = {
   createUser,
   getAllUsers,
+  getAUser,
 };
