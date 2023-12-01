@@ -30,8 +30,12 @@ const createUser = async (req: Request, res: Response) => {
         address,
       },
     });
-  } catch (err) {
-    console.log(err);
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+      error: err,
+    });
   }
 };
 
@@ -60,11 +64,11 @@ const getAllUsers = async (req: Request, res: Response) => {
   }
 };
 
-const getAUser = async (req: Request, res: Response) => {
+const getSingleUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    console.log(userId);
-    const result = await userService.getAUserFromDB(userId);
+    const result = await userService.getSingleUserFromDB(userId);
+    console.log(result);
     res.status(200).json({
       success: true,
       message: "user find successfully",
@@ -78,5 +82,5 @@ const getAUser = async (req: Request, res: Response) => {
 export const userController = {
   createUser,
   getAllUsers,
-  getAUser,
+  getSingleUser,
 };

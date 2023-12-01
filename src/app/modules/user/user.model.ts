@@ -55,7 +55,9 @@ const userSchema = new Schema<User>({
   },
   hobbies: [String],
   address: addressSchema,
-  orders: [orderSchema],
+  orders: {
+    type: orderSchema,
+  },
 });
 
 export const UserModel = model<User>("User", userSchema);
