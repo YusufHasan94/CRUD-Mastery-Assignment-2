@@ -13,7 +13,6 @@ const getAllUsersFromDB = async () => {
 
 const getSingleUserFromDB = async (id: string) => {
   const result = await UserModel.find({ userId: id });
-  console.log(result);
   return result;
 };
 
