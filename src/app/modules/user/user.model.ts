@@ -47,10 +47,15 @@ const orderSchema = new Schema<TOrders>(
   { _id: false }
 );
 const userSchema = new Schema<TUser, UserModel>({
-  userId: { type: Number },
+  userId: {
+    type: Number,
+    required: true,
+    unique: true,
+  },
   username: {
     type: String,
     required: true,
+    unique: true,
   },
   password: {
     type: String,
@@ -80,6 +85,11 @@ const userSchema = new Schema<TUser, UserModel>({
 userSchema.statics.isUserExists = async function (userId: number) {
   const existingUser = await User.findOne({ userId });
   return existingUser;
+};
+
+userSchema.statics.isUserNameExists = async function (username: string) {
+  const existingUserName = await User.findOne({ username });
+  return existingUserName;
 };
 
 //middleware
