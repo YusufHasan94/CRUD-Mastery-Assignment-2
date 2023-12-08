@@ -75,8 +75,39 @@ const addNewProduct = async (userId: Number, order: TOrders) => {
 const showAllProduct = async (userId: Number) => {
   try {
     if (await User.isUserExists(Number(userId))) {
-      const result = await User.find({ userId }, { orders: 1 });
+      const result = await User.find({ userId }, { _id: 0, orders: 1 });
       return result;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const totalPriceOfOrders = async (userId: Number) => {
+  try {
+    if (await User.isUserExists(Number(userId))) {
+      const result = await User.aggregate([
+        { $match: { userId } },
+        {
+          $project: {
+            order: 1,
+            totalPrice: {
+              $sum: {
+                $map: {
+                  input: "$orders",
+                  as: "order",
+                  in: {
+                    $multiply: ["$$order.price", "$$order.quantity"],
+                  },
+                },
+              },
+            },
+            _id: 0,
+          },
+        },
+      ]);
+      const totalPrice = result[0].totalPrice;
+      return { totalPrice };
     }
   } catch (error) {
     console.log(error);
@@ -91,4 +122,5 @@ export const userService = {
   deleteUserFromDB,
   addNewProduct,
   showAllProduct,
+  totalPriceOfOrders,
 };
