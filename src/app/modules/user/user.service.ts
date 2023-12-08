@@ -17,58 +17,67 @@ const getAllUsersFromDB = async () => {
   return result;
 };
 
-const getSingleUserFromDB = async (id: Number) => {
-  const result = await User.aggregate([{ $match: { userId: id } }]);
-  return result;
-};
-
-const updateUserDataFromDB = async (id: Number, newData: TUser) => {
+const getSingleUserFromDB = async (userId: Number) => {
   try {
-    const updateUserDataInfo = await User.findOneAndUpdate(
-      { userId: id },
-      newData,
-      { new: true }
-    );
-    if (!updateUserDataInfo) {
-      throw new Error("user not found");
+    if (await User.isUserExists(Number(userId))) {
+      const result = await User.aggregate([{ $match: { userId } }]);
+      return result;
+    } else {
+      throw new Error("User not found");
     }
-    return updateUserDataInfo;
-  } catch (error: any) {
-    throw new Error(`Error updating user ${error.message}`);
+  } catch (error) {
+    throw new Error("Something went wrong");
   }
 };
 
-const deleteUserFromDB = async (id: Number) => {
+const updateUserDataFromDB = async (userId: Number, newData: TUser) => {
   try {
-    const result = await User.aggregate([
-      { $match: { userId: id } },
-      { $project: { userId: 1 } },
-    ]);
-    if (result.length > 0) {
-      const deleteUser = await User.deleteOne({ userId: id });
-      return deleteUser;
+    if (await User.isUserExists(Number(userId))) {
+      const updateUserDataInfo = await User.findOneAndUpdate(
+        { userId },
+        newData,
+        { new: true }
+      );
+      return updateUserDataInfo;
     } else {
-      return null;
+      throw new Error("User Not found");
+    }
+  } catch (error) {
+    throw new Error("Something went wrong");
+  }
+};
+
+const deleteUserFromDB = async (userId: Number) => {
+  try {
+    if (await User.isUserExists(Number(userId))) {
+      const result = await User.deleteOne({ userId });
+      if (result) {
+        return null;
+      }
+    } else {
+      throw new Error("User not found!");
     }
   } catch (err) {
-    console.log(err);
+    throw new Error("Something went wrong");
   }
 };
 
 const addNewProduct = async (userId: Number, order: TOrders) => {
   try {
-    const user = await User.findOne({ userId });
-    if (user) {
-      const result = await User.updateOne(
-        { userId },
-        { $push: { orders: { $each: order } } }
-      );
-      return result;
+    if (await User.isUserExists(Number(userId))) {
+      const user = await User.findOne({ userId });
+      if (user) {
+        const result = await User.updateOne(
+          { userId },
+          { $push: { orders: order } }
+        );
+        return null;
+      }
     } else {
-      throw new Error("Something went wrong");
+      throw new Error("User not found");
     }
   } catch (err) {
-    console.log(err);
+    throw new Error("Something went wrong");
   }
 };
 
@@ -76,10 +85,14 @@ const showAllProduct = async (userId: Number) => {
   try {
     if (await User.isUserExists(Number(userId))) {
       const result = await User.find({ userId }, { _id: 0, orders: 1 });
-      return result;
+      if (result) {
+        return result;
+      }
+    } else {
+      throw new Error("User not found");
     }
   } catch (error) {
-    console.log(error);
+    throw new Error("Something went wrong");
   }
 };
 
@@ -108,9 +121,11 @@ const totalPriceOfOrders = async (userId: Number) => {
       ]);
       const totalPrice = result[0].totalPrice;
       return { totalPrice };
+    } else {
+      throw new Error("User not found");
     }
   } catch (error) {
-    console.log(error);
+    throw new Error("Something went wrong");
   }
 };
 

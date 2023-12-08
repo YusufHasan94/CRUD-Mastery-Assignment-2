@@ -91,16 +91,19 @@ const userSchema = new Schema<TUser, UserModel>({
   orders: [orderSchema],
 });
 
+//creating static methods for checking user available or not
 userSchema.statics.isUserExists = async function (userId: number) {
   const existingUser = await User.findOne({ userId });
   return existingUser;
 };
 
+//creating static methods for checking username available or not
 userSchema.statics.isUserNameExists = async function (username: string) {
   const existingUserName = await User.findOne({ username });
   return existingUserName;
 };
 
+//creating middleware to encrypt password
 userSchema.pre("save", async function (next) {
   const user = this;
   user.password = await bcrypt.hash(
