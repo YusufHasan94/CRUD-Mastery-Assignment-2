@@ -11,10 +11,6 @@
             To run this code locally use "npm run start:dev".  
         </li>
     </ul>
-    <p>
-        live server link: 
-        <a>
-            https://assignment2-woad.vercel.app/
-        </a>
-    </p>
 </div>
+
+live server link: https://assignment2-woad.vercel.app/
