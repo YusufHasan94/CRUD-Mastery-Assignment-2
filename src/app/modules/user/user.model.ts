@@ -40,9 +40,18 @@ const addressSchema = new Schema<TAddress>(
 );
 const orderSchema = new Schema<TOrders>(
   {
-    productName: { type: String },
-    price: { type: Number },
-    quantity: { type: Number },
+    productName: {
+      type: String,
+      required: true,
+    },
+    price: {
+      type: Number,
+      required: true,
+    },
+    quantity: {
+      type: Number,
+      required: true,
+    },
   },
   { _id: false }
 );
@@ -74,14 +83,14 @@ const userSchema = new Schema<TUser, UserModel>({
     type: Boolean,
     required: true,
   },
-  hobbies: [String],
-  address: addressSchema,
-  orders: {
-    type: orderSchema,
+  hobbies: {
+    type: [String],
+    required: true,
   },
+  address: addressSchema,
+  orders: [orderSchema],
 });
 
-//static method to check is user available or not
 userSchema.statics.isUserExists = async function (userId: number) {
   const existingUser = await User.findOne({ userId });
   return existingUser;
@@ -92,7 +101,6 @@ userSchema.statics.isUserNameExists = async function (username: string) {
   return existingUserName;
 };
 
-//middleware
 userSchema.pre("save", async function (next) {
   const user = this;
   user.password = await bcrypt.hash(

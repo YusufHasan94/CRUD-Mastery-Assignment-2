@@ -5,10 +5,10 @@ import userValidationSchema from "./user.validation";
 
 const createUser = async (req: Request, res: Response) => {
   try {
-    const { user: userData } = req.body;
-    const zodValidationData = userValidationSchema.parse(userData);
+    const user = req.body;
+    // const zodValidationData = userValidationSchema.parse(user);
 
-    const result = await userService.createUerIntoDB(zodValidationData);
+    const result = await userService.createUerIntoDB(user);
 
     const {
       userId,
@@ -46,23 +46,26 @@ const createUser = async (req: Request, res: Response) => {
 const getAllUsers = async (req: Request, res: Response) => {
   try {
     const result = await userService.getAllUsersFromDB();
+    if (result.length > 0) {
+      const userData = result.map((user: TUser) => {
+        const { username, fullName, age, email, address } = user;
+        return {
+          username,
+          fullName,
+          age,
+          email,
+          address,
+        };
+      });
 
-    const userData = result.map((user: TUser) => {
-      const { username, fullName, age, email, address } = user;
-      return {
-        username,
-        fullName,
-        age,
-        email,
-        address,
-      };
-    });
-
-    res.status(200).json({
-      success: true,
-      message: "users fetched successfully!",
-      data: userData,
-    });
+      res.status(200).json({
+        success: true,
+        message: "users fetched successfully!",
+        data: userData,
+      });
+    } else {
+      throw new Error("No user Found!");
+    }
   } catch (err: any) {
     res.status(500).json({
       success: false,
@@ -104,11 +107,11 @@ const getSingleUser = async (req: Request, res: Response) => {
 const updateUserInfo = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const { user: newData } = req.body;
-    const zodValidationUpdatedData = userValidationSchema.parse(newData);
-    const result = await userService.updateUserFromDB(
+    const user = req.body;
+    // const zodValidationUpdatedData = userValidationSchema.parse(newData);
+    const result = await userService.updateUserDataFromDB(
       parseInt(userId),
-      zodValidationUpdatedData
+      user
     );
     res.status(200).json({
       success: true,
@@ -127,8 +130,7 @@ const updateUserInfo = async (req: Request, res: Response) => {
 const deleteUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const result = await userService.deleteUserFromDB(parseInt(userId));
-    console.log(result);
+    const result = await userService.deleteUserFromDB(Number(userId));
     res.status(200).json({
       success: true,
       message: "user deleted successfully!",
@@ -143,10 +145,49 @@ const deleteUser = async (req: Request, res: Response) => {
   }
 };
 
+const addNewOrder = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const order = req.body;
+    const result = await userService.addNewProduct(parseInt(userId), order);
+    res.status(200).json({
+      success: true,
+      message: "order created successfully",
+      data: result,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "something went wrong",
+      error: err,
+    });
+  }
+};
+
+const showAllOrders = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const result = await userService.showAllProduct(Number(userId));
+    res.status(200).json({
+      success: true,
+      message: "orders fetched successfully",
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "something went wrong",
+      error: error,
+    });
+  }
+};
+
 export const userController = {
   createUser,
   getAllUsers,
   getSingleUser,
   updateUserInfo,
   deleteUser,
+  addNewOrder,
+  showAllOrders,
 };
