@@ -12,11 +12,11 @@ const nameSchema = new Schema<TUserName>(
   {
     firstName: {
       type: String,
-      required: true,
+      required: [true, "firstName required"],
     },
     lastName: {
       type: String,
-      required: true,
+      required: [true, "lastName required"],
     },
   },
   { _id: false }
@@ -25,15 +25,15 @@ const addressSchema = new Schema<TAddress>(
   {
     street: {
       type: String,
-      required: true,
+      required: [true, "street required for address"],
     },
     city: {
       type: String,
-      required: true,
+      required: [true, "city required for address"],
     },
     country: {
       type: String,
-      required: true,
+      required: [true, "country required for address"],
     },
   },
   { _id: false }
@@ -42,15 +42,15 @@ const orderSchema = new Schema<TOrders>(
   {
     productName: {
       type: String,
-      required: true,
+      required: [true, "product name required for orders"],
     },
     price: {
       type: Number,
-      required: true,
+      required: [true, "price required for orders"],
     },
     quantity: {
       type: Number,
-      required: true,
+      required: [true, "quantity required for orders"],
     },
   },
   { _id: false }
@@ -58,34 +58,34 @@ const orderSchema = new Schema<TOrders>(
 const userSchema = new Schema<TUser, UserModel>({
   userId: {
     type: Number,
-    required: true,
+    required: [true, "userId required"],
     unique: true,
   },
   username: {
     type: String,
-    required: true,
+    required: [true, "username required"],
     unique: true,
   },
   password: {
     type: String,
-    required: true,
+    required: [true, "password required"],
   },
   fullName: nameSchema,
   age: {
     type: Number,
-    required: true,
+    required: [true, "age required"],
   },
   email: {
     type: String,
-    required: true,
+    required: [true, "email required"],
   },
   isActive: {
     type: Boolean,
-    required: true,
+    required: [true, "isActive required"],
   },
   hobbies: {
     type: [String],
-    required: true,
+    required: [true, "hobbies required"],
   },
   address: addressSchema,
   orders: [orderSchema],

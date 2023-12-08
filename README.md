@@ -2,10 +2,19 @@
 <div>
     <ul>
         <li>
-            Clone the repo fist and install all dependencies using "npm install"
+            Clone the repo fist and install all dependencies using "npm install".
         </li>
         <li>
-            using live server link and adding routes check the all routes given into the requirements. 
+            Using live server link and adding routes check the all routes given into the requirements. 
         </li>
-    <ul>
+        <li>
+            To run this code locally use "npm run start:dev".  
+        </li>
+    </ul>
+    <p>
+        live server link: 
+        <a>
+            https://assignment2-woad.vercel.app/
+        </a>
+    </p>
 </div>

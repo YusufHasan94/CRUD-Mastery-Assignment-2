@@ -35,13 +35,11 @@ const createUser = async (req: Request, res: Response) => {
         address,
       },
     });
-  } catch (err: any) {
+  } catch (error: any) {
     res.status(500).json({
       success: false,
-      message: err.message || "Something went wrong",
-      error: {
-        description: "user already exists",
-      },
+      message: error.issues[0].path[0] + " required" || "something went wrong",
+      error: error,
     });
   }
 };
@@ -149,7 +147,7 @@ const updateUserInfo = async (req: Request, res: Response) => {
 
       res.status(200).json({
         success: true,
-        message: "User update successfully!",
+        message: "User updated successfully!",
         data: {
           userId,
           username,
